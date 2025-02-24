@@ -5,13 +5,13 @@
 		"factoryName": {
 			"value": "adf-udacity-datapipeline"
 		},
+		"AzureSynapseAnalytics1_connectionString": {
+			"value": ""
+		},
 		"ls_adls_accountKey": {
 			"value": ""
 		},
 		"ls_sqldb_connectionString": {
-			"value": ""
-		},
-		"AzureSynapseAnalytics1_connectionString": {
 			"value": ""
 		},
 		"ls_adls_properties_typeProperties_url": {
