@@ -1,0 +1,203 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "synap-udacity-datapipeline"
+		},
+		"ls_nycpayroll_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_nycpayroll'"
+		},
+		"synap-udacity-datapipeline-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'synap-udacity-datapipeline-WorkspaceDefaultSqlServer'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synap-udacity-datapipeline.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"ls_StorageAccount_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://storaudacitydatapipeline.dfs.core.windows.net/"
+		},
+		"synap-udacity-datapipeline-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://storaudacitydatapipeline.dfs.core.windows.net"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/ls_StorageAccount')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_StorageAccount_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ls_nycpayroll')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_nycpayroll_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/synap-udacity-datapipeline-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('synap-udacity-datapipeline-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/synap-udacity-datapipeline-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('synap-udacity-datapipeline-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Synapse SQL Script New')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "\n\n-- CREATE DATABASE [Udacity]\n\n-- CREATE EXTERNAL DATA SOURCE ExternalADLS\n-- WITH (\n--     LOCATION = 'https://storaudacitydatapipeline.dfs.core.windows.net/adlsnycpayroll-yourfirstname-lastintial'\n-- );\n-- GO\n\n-- CREATE EXTERNAL FILE FORMAT CsvFormat\n-- WITH (\n--     FORMAT_TYPE = DELIMITEDTEXT,\n--     FORMAT_OPTIONS (\n--         FIELD_TERMINATOR = ',',\n--         STRING_DELIMITER = '\"',\n--         FIRST_ROW = 2\n--     )\n-- );\n\n-- CREATE EXTERNAL TABLE [dbo].[NYC_Payroll_Summary](\n-- [FiscalYear] [int] NULL,\n-- [AgencyName] [varchar](50) NULL,\n-- [TotalPaid] [float] NULL\n-- )\n-- WITH (\n--     LOCATION = 'dirstaging/',  -- Directory C\n--     DATA_SOURCE = ExternalADLS,\n--     FILE_FORMAT = CsvFormat\n-- );\n\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Udacity",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Synapse SQL Scripts')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- -- Use the same file format as used for creating the External Tables during the LOAD step.\n-- IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat') \n-- CREATE EXTERNAL FILE FORMAT [SynapseDelimitedTextFormat] \n-- WITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n-- FORMAT_OPTIONS (\n-- FIELD_TERMINATOR = ',',\n-- USE_TYPE_DEFAULT = FALSE\n-- ))\n-- GO\n\n-- CREATE EXTERNAL TABLE [dbo].[NYC_Payroll_Summary](\n-- [FiscalYear] [int] NULL,\n-- [AgencyName] [varchar](50) NULL,\n-- [TotalPaid] [float] NULL\n-- )\n-- WITH (\n-- LOCATION = '/',\n-- DATA_SOURCE = [adlsnycpayroll-yourfirstname-lastintial_storaudacitydatapipeline_dfs_core_windows_net],\n-- FILE_FORMAT = [SynapseDelimitedTextFormat]\n-- )\n-- GO\n\n-- 1\n-- CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'yU*i@4*PofrESefR';\n-- GO\n\n-- 2\n-- CREATE DATABASE SCOPED CREDENTIAL [SasTokenWrite]\n-- WITH IDENTITY = 'SHARED ACCESS SIGNATURE',\n-- SECRET = 'sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-03-08T15:30:52Z&st=2025-02-24T07:30:52Z&spr=https,http&sig=R%2B6DnZNct%2B2VItUUKrr3wpvb1nyP2LFczArITnf9JVg%3D';\n-- GO\n\n-- 3\n-- CREATE EXTERNAL DATA SOURCE [adlsnycpayroll-yourfirstname-lastintial_storaudacitydatapipeline_dfs_core_windows_net]\n-- WITH (\n--     LOCATION = 'https://storaudacitydatapipeline.dfs.core.windows.net/adlsnycpayroll-yourfirstname-lastintial',\n--     CREDENTIAL = [SasTokenWrite]\n-- );\n-- GO\n\n-- 4\n-- CREATE EXTERNAL TABLE [dbo].[NYC_Payroll_Summary](\n-- [FiscalYear] [int] NULL,\n-- [AgencyName] [varchar](50) NULL,\n-- [TotalPaid] [float] NULL\n-- )\n-- WITH (\n--     LOCATION = '/',\n--     DATA_SOURCE = [adlsnycpayroll-yourfirstname-lastintial_storaudacitydatapipeline_dfs_core_windows_net],\n--     FILE_FORMAT = [SynapseDelimitedTextFormat]\n-- );\n-- GO\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "udacity",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT TOP (100) [FiscalYear]\n,[AgencyName]\n,[TotalPaid]\n FROM [dbo].[NYC_Payroll_Summary]",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Udacity",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		}
+	]
+}

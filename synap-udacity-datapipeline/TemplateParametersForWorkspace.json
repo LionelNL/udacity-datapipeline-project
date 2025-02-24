@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "synap-udacity-datapipeline"
+		},
+		"ls_nycpayroll_connectionString": {
+			"value": ""
+		},
+		"synap-udacity-datapipeline-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synap-udacity-datapipeline.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"ls_StorageAccount_properties_typeProperties_url": {
+			"value": "https://storaudacitydatapipeline.dfs.core.windows.net/"
+		},
+		"synap-udacity-datapipeline-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://storaudacitydatapipeline.dfs.core.windows.net"
+		}
+	}
+}
