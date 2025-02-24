@@ -11,6 +11,9 @@
 		"ls_sqldb_connectionString": {
 			"value": ""
 		},
+		"AzureSynapseAnalytics1_connectionString": {
+			"value": ""
+		},
 		"ls_adls_properties_typeProperties_url": {
 			"value": "https://storaudacitydatapipeline.dfs.core.windows.net/"
 		}

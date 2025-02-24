@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_sqldb'"
 		},
+		"AzureSynapseAnalytics1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics1'"
+		},
 		"ls_adls_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://storaudacitydatapipeline.dfs.core.windows.net/"
@@ -51,6 +55,9 @@
 					},
 					"ls_sqldb_connectionString": {
 						"value": "[parameters('ls_sqldb_connectionString')]"
+					},
+					"AzureSynapseAnalytics1_connectionString": {
+						"value": "[parameters('AzureSynapseAnalytics1_connectionString')]"
 					},
 					"ls_adls_properties_typeProperties_url": {
 						"value": "[parameters('ls_adls_properties_typeProperties_url')]"
