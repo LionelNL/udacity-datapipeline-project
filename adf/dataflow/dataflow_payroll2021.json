@@ -77,19 +77,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     mapColumn(",
-				"          AgencyCode,",
-				"          AgencyName,",
-				"          EmployeeID,",
-				"          LastName,",
-				"          FirstName,",
-				"          WorkLocationBorough,",
-				"          TitleCode,",
-				"          TitleDescription,",
-				"          LeaveStatusasofJune30,",
-				"          PayBasis",
-				"     )) ~> sinkpayroll2021"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkpayroll2021"
 			]
 		}
 	}
