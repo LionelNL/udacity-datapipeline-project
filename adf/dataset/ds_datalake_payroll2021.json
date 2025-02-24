@@ -1,5 +1,5 @@
 {
-	"name": "ds_payroll2021",
+	"name": "ds_datalake_payroll2021",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_adls",

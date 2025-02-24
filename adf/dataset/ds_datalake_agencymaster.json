@@ -1,5 +1,5 @@
 {
-	"name": "ds_agencymaster",
+	"name": "ds_datalake_agencymaster",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_adls",
