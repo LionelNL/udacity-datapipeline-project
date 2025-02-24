@@ -1,0 +1,17 @@
+{
+	"name": "Synapse SQL Script New",
+	"properties": {
+		"content": {
+			"query": "\n\n-- CREATE DATABASE [Udacity]\n\n-- CREATE EXTERNAL DATA SOURCE ExternalADLS\n-- WITH (\n--     LOCATION = 'https://storaudacitydatapipeline.dfs.core.windows.net/adlsnycpayroll-yourfirstname-lastintial'\n-- );\n-- GO\n\n-- CREATE EXTERNAL FILE FORMAT CsvFormat\n-- WITH (\n--     FORMAT_TYPE = DELIMITEDTEXT,\n--     FORMAT_OPTIONS (\n--         FIELD_TERMINATOR = ',',\n--         STRING_DELIMITER = '\"',\n--         FIRST_ROW = 2\n--     )\n-- );\n\n-- CREATE EXTERNAL TABLE [dbo].[NYC_Payroll_Summary](\n-- [FiscalYear] [int] NULL,\n-- [AgencyName] [varchar](50) NULL,\n-- [TotalPaid] [float] NULL\n-- )\n-- WITH (\n--     LOCATION = 'dirstaging/',  -- Directory C\n--     DATA_SOURCE = ExternalADLS,\n--     FILE_FORMAT = CsvFormat\n-- );\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Udacity",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
